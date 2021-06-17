@@ -1,0 +1,7 @@
+main: net.natroutter.betterchairs.BetterChairs
+name: ${project.name}
+version: ${project.version}
+author: NATroutter
+description: ${project.description}
+api-version: 1.16
+website: ${project.url}
