@@ -3,11 +3,17 @@ package net.natroutter.betterchairs.handlers;
 import net.natroutter.betterchairs.BetterChairs;
 import net.natroutter.natlibs.handlers.Database.YamlDatabase;
 import net.natroutter.natlibs.utilities.Utilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class ChairHandler {
 
@@ -17,13 +23,30 @@ public class ChairHandler {
     private static List<Location> Chairs = new ArrayList<>();
 
     public static void load() {
+        wipe();
         List<Location> list = getList();
         if (list != null) {
             Chairs = getList();
         }
     }
-    public static void unload() { saveLocs(); }
+    public static void unload() {
+        wipe();
+        saveLocs();
+    }
 
+    public static void wipe() {
+        for (World w : Bukkit.getServer().getWorlds()) {
+            for (Entity ent : w.getEntities()) {
+                if (ent instanceof ArmorStand) {
+                    ArmorStand chair = (ArmorStand)ent;
+                    if (chair.getCustomName() == null) {continue;}
+                    if (chair.getCustomName().startsWith("BetterChairs--")) {
+                        ent.remove();
+                    }
+                }
+            }
+        }
+    }
 
 
     public static boolean isChair(Block block) {
