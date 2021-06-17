@@ -67,6 +67,7 @@ public class SittingHandler implements Listener {
         chair.setInvulnerable(true);
         chair.setCustomNameVisible(false);
         chair.setCustomName("BetterChairs--" + UUID.randomUUID());
+        chair.setInvisible(true);
         chair.addPassenger(p);
 
         if (config.useMessages) {
