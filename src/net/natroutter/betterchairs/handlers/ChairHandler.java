@@ -17,28 +17,32 @@ import java.util.UUID;
 
 public class ChairHandler {
 
-    private static final YamlDatabase database = BetterChairs.getDatabase();
-    private static final Utilities util = BetterChairs.getUtilities();
+    private final YamlDatabase database ;
+    private final Utilities util;
 
-    private static List<Location> Chairs = new ArrayList<>();
+    public ChairHandler(BetterChairs chairs) {
+        database = chairs.getDatabase();
+        util = chairs.getUtilities();
+    }
 
-    public static void load() {
+    private List<Location> Chairs = new ArrayList<>();
+
+    public void load() {
         wipe();
         List<Location> list = getList();
         if (list != null) {
             Chairs = getList();
         }
     }
-    public static void unload() {
+    public void unload() {
         wipe();
         saveLocs();
     }
 
-    public static void wipe() {
+    public void wipe() {
         for (World w : Bukkit.getServer().getWorlds()) {
             for (Entity ent : w.getEntities()) {
-                if (ent instanceof ArmorStand) {
-                    ArmorStand chair = (ArmorStand)ent;
+                if (ent instanceof ArmorStand chair) {
                     if (chair.getCustomName() == null) {continue;}
                     if (chair.getCustomName().startsWith("BetterChairs--")) {
                         ent.remove();
@@ -49,7 +53,7 @@ public class ChairHandler {
     }
 
 
-    public static boolean isChair(Block block) {
+    public boolean isChair(Block block) {
         for (Location loc : Chairs) {
             if (locMatch(loc, block.getLocation())) {
                 return true;
@@ -58,12 +62,12 @@ public class ChairHandler {
         return false;
     }
 
-    public static void addChair(Block block) {
+    public void addChair(Block block) {
         Chairs.add(block.getLocation());
         saveLocs();
     }
 
-    public static void removeChair(Block block) {
+    public void removeChair(Block block) {
         for (int i = 0; i < Chairs.size(); i++) {
             Location loc = Chairs.get(i);
             if (locMatch(loc, block.getLocation())) {
@@ -74,16 +78,13 @@ public class ChairHandler {
     }
 
 
-    private static boolean locMatch(Location loc1, Location loc2) {
+    private boolean locMatch(Location loc1, Location loc2) {
         return loc1.getBlockX() == loc2.getBlockX() && loc1.getBlockY() == loc2.getBlockY() && loc1.getBlockZ() == loc2.getBlockZ();
     }
 
-    private static Location pruneLoc(Location loc) {
-        return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch());
-    }
 
-    private static Character separator = '\\';
-    private static void saveLocs() {
+    private Character separator = '\\';
+    private void saveLocs() {
         List<String> list = new ArrayList<>();
         for (Location ob : Chairs) {
             list.add(util.serializeLocation(ob, separator));
@@ -91,7 +92,7 @@ public class ChairHandler {
         database.save("General", "Chairs", list);
     }
 
-    public static List<Location> getList() {
+    public List<Location> getList() {
         List<?> oldlist = database.getList("General", "Chairs");
         if (oldlist == null ) {return null;}
 

@@ -21,11 +21,16 @@ import java.util.List;
 
 public class BetterChairsCMD extends Command {
 
-    private final Config config = BetterChairs.getConf();
+    private ChairHandler chairHandler;
+    private BetterChairs chairs;
+    private Config config;
 
-    public BetterChairsCMD() {
+    public BetterChairsCMD(BetterChairs chairs) {
         super("BetterChairs");
         this.setAliases(Collections.singletonList("bc"));
+        this.chairs = chairs;
+        this.config = chairs.getConf();
+        this.chairHandler = chairs.getChairHandler();
     }
 
     @Override
@@ -39,7 +44,7 @@ public class BetterChairsCMD extends Command {
         if (args.length == 0) {
             p.sendMessage(" ");
             p.sendMessage("§8§l§m━━━━━━━━━━━━§8§l|§9§l BetterChairs §8§l|§m━━━━━━━━━━━━");
-            p.sendMessage("§8§l» §7BetterChairs version §b" + BetterChairs.getInstance().getDescription().getVersion());
+            p.sendMessage("§8§l» §7BetterChairs version §b" + chairs.getPlugin().getDescription().getVersion());
             p.sendMessage("§8§l» §7Made by: §bNATroutter");
             p.sendMessage("§8§l» §7Website: §bhttps://NATroutter.net");
             p.sendMessage("§8§l§m━━━━━━━━━━━━§8§l|§9§l BetterChairs §8§l|§m━━━━━━━━━━━━");
@@ -64,7 +69,7 @@ public class BetterChairsCMD extends Command {
                         return false;
                     }
                     if (target.getType().name().endsWith("_SLAB") || target.getType().name().endsWith("_STAIRS")) {
-                        ChairHandler.addChair(target);
+                        chairHandler.addChair(target);
                         p.sendMessage(config.prefix + config.ChairAdded);
 
                     } else {
@@ -83,7 +88,7 @@ public class BetterChairsCMD extends Command {
                         return false;
                     }
                     if (target.getType().name().endsWith("_SLAB") || target.getType().name().endsWith("_STAIRS")) {
-                        ChairHandler.removeChair(target);
+                        chairHandler.removeChair(target);
                         p.sendMessage(config.prefix + config.ChairRemoved);
 
                     } else {
@@ -96,7 +101,7 @@ public class BetterChairsCMD extends Command {
 
                 if (p.hasPermission("betterchars.list")) {
 
-                    List<Location> locs = ChairHandler.getList();
+                    List<Location> locs = chairHandler.getList();
                     if (locs == null) {
                         p.sendMessage(config.prefix + config.NoChairs);
                         return false;
